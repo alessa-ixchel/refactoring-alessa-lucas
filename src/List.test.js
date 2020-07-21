@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import List from './List';
+import renderer from 'react-test-renderer';
 
 // this is the test case
 it('renders without crashing', () => {
@@ -13,3 +14,11 @@ it('renders without crashing', () => {
   // clean up code
   ReactDOM.unmountComponentAtNode(div);
 });
+
+it('renders the UI as expected', () => {
+  const arr = [{id:5, title:'Test', content:'Words'}];
+  const tree = renderer
+    .create(<List header="list" cards={arr}/>)
+    .toJSON();
+  expect(tree).toMatchSnapshot();  
+  });
