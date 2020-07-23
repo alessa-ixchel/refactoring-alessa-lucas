@@ -45,9 +45,7 @@ class App extends Component {
     }
   };
 
-
-  handleRandomCard=()=> {
-    console.log(this.state);
+  handleRandomCard=(listId)=> {
     const newRandomCard = () => {
       const id = Math.random().toString(36).substring(2, 4)
         + Math.random().toString(36).substring(2, 4);
@@ -58,14 +56,32 @@ class App extends Component {
       }
     }
     let newCard = newRandomCard();
-    //add the new card to the allCards object
-    let newObj= {...this.state.store.allCards, [newCard.id]: newCard};
-   console.log(newObj)
+    
+    // add the new card to the allCards object
+    // let newObj= {...this.state.store.allCards, [newCard.id]: newCard};
+
+    // let currentList = this.state.store.lists.find(list => list.id === listId);
+    // currentList.cardIds.push(newCard.id);
+    // console.log(currentList);
+
+    let currentList = this.state.store.lists.map(list => {
+      if (list.id === listId) {
+        return {
+          ...list, 
+          cardIds: [...list.cardIds, newCard.id]
+        }
+      }
+      return list;
+    })
+
+    
     //adding new card id to list
     this.setState({
-      store: {lists:this.state.store.lists, allCards:newObj}
+      store: {
+        lists: currentList,
+        allCards: {...this.state.store.allCards, [newCard.id]: newCard}
+      }
     })
-    console.log(newRandomCard());
   }
 
   render() {
@@ -79,6 +95,7 @@ class App extends Component {
           {store.lists.map(list => (
             <List
               key={list.id}
+              id={list.id}
               header={list.header}
               cards={list.cardIds.map(id => store.allCards[id])}
               onRandomCard={this.handleRandomCard}
