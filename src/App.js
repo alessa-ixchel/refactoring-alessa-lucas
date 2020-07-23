@@ -45,6 +45,38 @@ class App extends Component {
     }
   };
 
+  handleDeleteCard = (cardId) => {
+    function omit(obj, cardId) {
+      let {[cardId]: _, ...rest} = obj;
+      return rest;
+    }
+
+    let currentList = this.state.store.lists.map(list => {
+      return {
+        ...list,
+        cardIds: list.cardIds.filter(thisCardId => thisCardId !== cardId)
+      }
+      
+      // return omit(list.cardIds, cardId);
+      // return list.cardIds.filter(thisCardId => thisCardId !== cardId);
+    })
+
+    let currentAllCards = omit(this.state.store.allCards, cardId)
+
+    console.log(currentList);
+    console.log(currentAllCards);
+
+    // To remove the foo key value pair
+    // const newObjectWithKVPs = omit(objectWithKVPs, cardId);
+
+    this.setState({
+        store: {  
+          lists: currentList,
+          allCards: currentAllCards
+      }
+    })
+  }
+
   handleRandomCard=(listId)=> {
     const newRandomCard = () => {
       const id = Math.random().toString(36).substring(2, 4)
@@ -99,6 +131,7 @@ class App extends Component {
               header={list.header}
               cards={list.cardIds.map(id => store.allCards[id])}
               onRandomCard={this.handleRandomCard}
+              onDeleteCard={this.handleDeleteCard}
             />
           ))}
         </div>
